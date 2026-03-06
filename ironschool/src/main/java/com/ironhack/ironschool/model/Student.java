@@ -3,7 +3,6 @@ package com.ironhack.ironschool.model;
 import java.util.Random;
 
 public class Student {
-
     private String studentId;
     private String name;
     private String address;

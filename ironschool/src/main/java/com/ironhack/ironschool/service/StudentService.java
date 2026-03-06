@@ -1,34 +1,30 @@
 package com.ironhack.ironschool.service;
 
+import com.ironhack.ironschool.exception.ResourceNotFoundException;
 import com.ironhack.ironschool.model.Student;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 @Service
 public class StudentService {
 
-    private List<Student> students = new ArrayList<>();
-
-    public void addStudent(Student student){
-        students.add(student);
+    private Map<String, Student> students = new HashMap<>();
+    public void addStudent(Student student) {
+        students.put(student.getStudentId(), student);
     }
-
-    public Student findStudentById(String studentId){
-        for(Student s : students){
-            if(s.getStudentId().equals(studentId)){
-                return s;
-            }
+    public Student findStudentById(String studentId) {
+        Student student = students.get(studentId);
+        if (student == null) {
+            throw new ResourceNotFoundException("Student not found");
         }
-        return null;
+        return student;
     }
-
-    public List<Student> getAllStudents(){
-        return students;
+    public List<Student> getAllStudents() {
+        return new ArrayList<>(students.values());
     }
-
-    public void showStudents(){
-        for(Student s : students){
+    public void showStudents() {
+        for (Student s : students.values()) {
             System.out.println(s);
         }
     }

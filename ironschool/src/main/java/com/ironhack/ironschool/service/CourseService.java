@@ -2,10 +2,11 @@ package com.ironhack.ironschool.service;
 
 import com.ironhack.ironschool.model.Course;
 import com.ironhack.ironschool.model.Teacher;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@Service
 public class CourseService {
 
     private Map<String, Course> courses = new HashMap<>();

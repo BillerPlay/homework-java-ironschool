@@ -1,5 +1,7 @@
 package com.ironhack.ironschool.model;
 
+import java.util.Random;
+
 public class Student {
     private String studentId;
     private String name;
@@ -8,6 +10,7 @@ public class Student {
     private Course course;
 
     public Student(String name, String address, String email) {
+        this.studentId = generateStudentId();
         this.name = name;
         this.address = address;
         this.email = email;
@@ -51,5 +54,11 @@ public class Student {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+    public String generateStudentId() {
+        Random random = new Random();
+        String coursePrefix = "STU";
+        int number = 1000 + random.nextInt(9000);
+        return coursePrefix + "-" + number;
     }
 }

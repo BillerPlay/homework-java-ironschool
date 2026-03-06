@@ -11,7 +11,7 @@ public class Teacher {
     public Teacher(String name, double salary) {
         teacherId=generateTeacherId();
         this.name = name;
-        this.salary = salary;
+        setSalary(salary);
     }
 
     public String getTeacherId() {

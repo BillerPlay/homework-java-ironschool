@@ -3,6 +3,7 @@ package com.ironhack.ironschool.model;
 import java.util.Random;
 
 public class Student {
+
     private String studentId;
     private String name;
     private String address;
@@ -10,7 +11,7 @@ public class Student {
     private Course course;
 
     public Student(String name, String address, String email) {
-        this.studentId = generateStudentId();
+        studentId=generateStudentId();
         this.name = name;
         this.address = address;
         this.email = email;
@@ -20,40 +21,47 @@ public class Student {
         return studentId;
     }
 
-    public void setStudentId(String studentId) {
-        this.studentId = studentId;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public Course getCourse() {
         return course;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "studentId='" + studentId + '\'' +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", email='" + email + '\'' +
+                ", course=" + (course != null ? course.getName() : "None") +
+                '}';
     }
     public String generateStudentId() {
         Random random = new Random();

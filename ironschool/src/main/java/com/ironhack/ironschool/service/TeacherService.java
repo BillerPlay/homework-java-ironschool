@@ -1,10 +1,11 @@
 package com.ironhack.ironschool.service;
 
 import com.ironhack.ironschool.model.Teacher;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
 public class TeacherService {
 
     private List<Teacher> teachers = new ArrayList<>();

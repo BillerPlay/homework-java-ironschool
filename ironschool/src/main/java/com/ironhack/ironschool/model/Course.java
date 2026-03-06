@@ -3,13 +3,14 @@ package com.ironhack.ironschool.model;
 import java.util.Random;
 
 public class Course {
-    private String courseId = generateCourseId();
+    private String courseId;
     private String name;
     private double price;
     private double moneyEarned;
     private Teacher teacher;
 
     public Course(String name, double price) {
+        this.courseId = generateCourseId();
         this.name = name;
         this.price = price;
         this.moneyEarned = 0;

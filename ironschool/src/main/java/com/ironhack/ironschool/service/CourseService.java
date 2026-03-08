@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.Map;
 @Service
 public class CourseService {
-
+    public final TeacherService teacherService;
+    public CourseService(TeacherService teacherService){
+        this.teacherService = teacherService;
+    }
     private Map<String, Course> courses = new HashMap<>();
 
     public void addCourse(Course course){
@@ -19,11 +22,11 @@ public class CourseService {
         return courses.get(courseId);
     }
 
-    public void assignTeacher(String courseId, Teacher teacher){
+    public void assignTeacher(String courseId, String teacherId){
         Course course = courses.get(courseId);
 
         if(course != null){
-            course.setTeacher(teacher);
+            course.setTeacher(teacherService.getTeacher(teacherId));
         }
     }
 
@@ -81,5 +84,8 @@ public class CourseService {
 
     public Map<String, Course> getCourses(){
         return courses;
+    }
+    public Course getCourse(String courseId){
+        return courses.get(courseId);
     }
 }

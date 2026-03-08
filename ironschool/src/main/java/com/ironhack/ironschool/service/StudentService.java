@@ -1,6 +1,7 @@
 package com.ironhack.ironschool.service;
 
 import com.ironhack.ironschool.exception.ResourceNotFoundException;
+import com.ironhack.ironschool.model.Course;
 import com.ironhack.ironschool.model.Student;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +9,10 @@ import java.util.*;
 
 @Service
 public class StudentService {
-
+    public final CourseService courseService;
+    public StudentService(CourseService courseService){
+        this.courseService = courseService;
+    }
     private Map<String, Student> students = new HashMap<>();
     public void addStudent(Student student) {
         students.put(student.getStudentId(), student);
@@ -28,4 +32,12 @@ public class StudentService {
             System.out.println(s);
         }
     }
+//    Enroll student to course
+    public void enrollStudentToCourse(String studentId, String courseId){
+        Student student = students.get(studentId);
+        student.setCourse(courseService.getCourse(courseId));
+
+        courseService.addMoney(courseId);
+    }
+
 }

@@ -68,7 +68,7 @@ public class ConsoleMenu implements CommandLineRunner {
                     if (teacher.getName().length() <= 3) {
                         throw new InvalidInputException("Teacher's name can not be less 3 letters.");
                     }
-                    teachers.put(teacher.getTeacherId(), teacher);
+                    teacherService.addTeacher(teacher);
                     System.out.println("Teacher created: " + teacher.getTeacherId() + " - " + teacher.getName());
                 } catch (InvalidInputException e) {
                     System.out.println(e.getMessage());
@@ -101,7 +101,7 @@ public class ConsoleMenu implements CommandLineRunner {
                     if (course.getPrice() < 0.00) {
                         throw new InvalidInputException("Course's price can not be negative.");
                     }
-                    courses.put(course.getCourseId(), course);
+                    courseService.addCourse(course);
                     System.out.println("Course created: " + course.getCourseId() + " - " + course.getName());
                 } catch (InvalidInputException e) {
                     System.out.println(e.getMessage());
@@ -139,7 +139,7 @@ public class ConsoleMenu implements CommandLineRunner {
                     if (!student.getEmail().contains("@")) {
                         throw new InvalidInputException("Student's email is probably invalid.");
                     }
-                    students.put(student.getStudentId(), student);
+                    studentService.addStudent(student);
                     System.out.println("Student created: " + student.getStudentId() + " - " + student.getName());
                 } catch (InvalidInputException e) {
                     System.out.println(e.getMessage());
@@ -150,7 +150,7 @@ public class ConsoleMenu implements CommandLineRunner {
         System.out.println("Setup is done! Open the console!");
 //=======================  Main Console ==========================
         while (isRunning) {
-            System.out.print("Console:");
+            System.out.print("Console: ");
             String command = scanner.nextLine().trim();
             System.out.println();
             if (command.isEmpty()) continue;
@@ -168,6 +168,21 @@ public class ConsoleMenu implements CommandLineRunner {
                         if (!courses.containsKey(partsOfCommand[2])) {
                             throw new InvalidCommandException("Course with ID " + partsOfCommand[2] + " does not exist.");
                         }
+                        studentService.enrollStudentToCourse(partsOfCommand[1], partsOfCommand[2]);
+                        break;
+                    case "ASSIGN":
+                        if (partsOfCommand.length != 3) {
+                            throw new InvalidCommandException("Usage: ASSIGN [TEACHER_ID] [COURSE_ID]");
+                        }
+                        if (!teachers.containsKey(partsOfCommand[1])) {
+                            throw new InvalidCommandException("Teacher with ID " + partsOfCommand[1] + " does not exist.");
+                        }
+                        if (!courses.containsKey(partsOfCommand[2])) {
+                            throw new InvalidCommandException("Course with ID " + partsOfCommand[2] + " does not exist.");
+                        }
+                        courseService.assignTeacher(partsOfCommand[1], partsOfCommand[2]);
+                        break;
+
                     case "EXIT":
                         isRunning = false;
                         System.out.println("Closing console...");

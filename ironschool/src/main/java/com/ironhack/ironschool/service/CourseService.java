@@ -18,10 +18,6 @@ public class CourseService {
         courses.put(course.getCourseId(), course);
     }
 
-    public Course findCourseById(String courseId){
-        return courses.get(courseId);
-    }
-
     public void assignTeacher(String courseId, String teacherId){
         Course course = courses.get(courseId);
 

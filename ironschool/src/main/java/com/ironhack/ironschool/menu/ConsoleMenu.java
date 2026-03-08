@@ -182,7 +182,62 @@ public class ConsoleMenu implements CommandLineRunner {
                         }
                         courseService.assignTeacher(partsOfCommand[1], partsOfCommand[2]);
                         break;
+                    case "SHOW":
+                        if (partsOfCommand.length != 2) {
+                            throw new InvalidCommandException("Usage: SHOW [COURSES|STUDENTS|TEACHERS|PROFIT]");
+                        }
 
+                        String whatToShow = partsOfCommand[1];
+
+                        switch (whatToShow) {
+                            case "COURSES":
+                                courseService.showCourses();
+                                break;
+
+                            case "STUDENTS":
+                                studentService.showStudents();
+                                break;
+
+                            case "TEACHERS":
+                                teacherService.showTeachers();
+                                break;
+
+                            case "PROFIT":
+                                double total = courseService.getTotalEarned();
+                                System.out.println("Total profit: " + total);
+                                break;
+
+                            default:
+                                throw new InvalidCommandException("Usage: SHOW [COURSES|STUDENTS|TEACHERS|PROFIT]");
+                        }
+                        break;
+                    case "LOOKUP":
+
+                        if (partsOfCommand.length != 3) {
+                            throw new InvalidCommandException("Usage: LOOKUP [COURSE|STUDENT|TEACHER] [ID]");
+                        }
+
+                        String type = partsOfCommand[1];
+                        String id = partsOfCommand[2];
+
+                        switch (type) {
+                            case "COURSE":
+                                courseService.lookupCourse(id);
+                                break;
+
+                            case "STUDENT":
+                                studentService.lookupStudent(id);
+                                break;
+
+                            case "TEACHER":
+                                teacherService.lookupTeacher(id);
+                                break;
+
+                            default:
+                                throw new InvalidCommandException("Unknown LOOKUP command");
+                        }
+
+                        break;
                     case "EXIT":
                         isRunning = false;
                         System.out.println("Closing console...");

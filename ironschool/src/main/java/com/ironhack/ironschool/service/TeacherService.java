@@ -1,5 +1,6 @@
 package com.ironhack.ironschool.service;
 
+import com.ironhack.ironschool.model.Student;
 import com.ironhack.ironschool.model.Teacher;
 import com.ironhack.ironschool.exception.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,19 @@ public class TeacherService {
         for (Teacher t : teachers.values()) {
             System.out.println(t);
         }
+    }
+
+    public void lookupTeacher(String teacherId){
+
+        Teacher teacher = teachers.get(teacherId);
+
+        if(teacher == null){
+            System.out.println("Teacher not found");
+            return;
+        }
+
+        System.out.println("Teacher ID: " + teacher.getTeacherId());
+        System.out.println("Name: " + teacher.getName());
+        System.out.println("Salary: " + teacher.getSalary());
     }
 }

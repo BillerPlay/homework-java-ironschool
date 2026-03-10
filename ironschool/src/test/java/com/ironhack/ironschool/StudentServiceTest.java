@@ -2,6 +2,7 @@ package com.ironhack.ironschool;
 
 import com.ironhack.ironschool.exception.ResourceNotFoundException;
 import com.ironhack.ironschool.model.Student;
+import com.ironhack.ironschool.service.CourseService;
 import com.ironhack.ironschool.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,10 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class StudentServiceTest {
     private Student student;
     private StudentService studentService;
+    private CourseService courseService;
     @BeforeEach
     void setUp(){
         student=new Student("Miko","Khirdalan 125","miko@gmail.com");
-        studentService=new StudentService();
+        studentService=new StudentService(courseService);
     }
     @Test
     void addStudent_validData_addStudentToMap(){

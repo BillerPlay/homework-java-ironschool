@@ -13,7 +13,10 @@ import java.util.Map;
 
 @Service
 public class CourseService {
-
+    public final TeacherService teacherService;
+    public CourseService(TeacherService teacherService){
+        this.teacherService = teacherService;
+    }
     private Map<String, Course> courses = new HashMap<>();
     private final TeacherService teacherService;
     private final StudentService studentService;

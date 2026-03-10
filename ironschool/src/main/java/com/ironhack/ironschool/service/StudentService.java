@@ -9,12 +9,16 @@ import java.util.*;
 
 @Service
 public class StudentService {
-
+    public final CourseService courseService;
+    public StudentService(CourseService courseService){
+        this.courseService = courseService;
+    }
     private Map<String, Student> students = new HashMap<>();
     public Student addStudent(Student student) {
         students.put(student.getStudentId(), student);
         return students.get(student.getStudentId());
     }
+
     public Student findStudentById(String studentId) {
         Student student = students.get(studentId);
         if (student == null) {
@@ -22,9 +26,11 @@ public class StudentService {
         }
         return student;
     }
+
     public List<Student> getAllStudents() {
         return new ArrayList<>(students.values());
     }
+
     public void showStudents() {
         for (Student s : students.values()) {
             System.out.println(s);

@@ -62,4 +62,6 @@ public class Course {
         int number = 1000 + random.nextInt(9000);
         return coursePrefix + "-" + number;
     }
+
+
 }

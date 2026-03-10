@@ -25,6 +25,9 @@ public class TeacherService {
     public List<Teacher> getAllTeachers() {
         return new ArrayList<>(teachers.values());
     }
+    public Teacher getTeacher(String teacherId){
+        return teachers.get(teacherId);
+    }
     public void showTeachers() {
         for (Teacher t : teachers.values()) {
             System.out.println(t);

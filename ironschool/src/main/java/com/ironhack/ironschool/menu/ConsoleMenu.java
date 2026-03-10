@@ -74,9 +74,10 @@ public class ConsoleMenu implements CommandLineRunner {
                         break;
 
                     case "SHOW":
-                        if (parts.length != 2)
-                            throw new InvalidCommandException("Usage: SHOW [COURSES/STUDENTS/TEACHERS/PROFIT]");
-                        showCommand(parts[1].toUpperCase());
+                        if (parts.length < 2) throw new InvalidCommandException("Usage: SHOW [type]");
+                        String[] showParts = new String[parts.length - 1];
+                        System.arraycopy(parts, 1, showParts, 0, showParts.length);
+                        showCommand(showParts);
                         break;
 
                     case "LOOKUP":
@@ -115,25 +116,62 @@ public class ConsoleMenu implements CommandLineRunner {
         System.out.println("Teacher " + teacher.getName() + " assigned to course " + course.getName());
     }
 
-    private void showCommand(String type) {
+    private void showCommand(String[] parts) {
+        String type = parts[0];
         switch (type) {
             case "COURSES":
                 courseService.getAllCourses().forEach(c ->
                         System.out.println(c.getCourseId() + " - " + c.getName() + " - $" + c.getPrice()));
                 break;
+
             case "STUDENTS":
-                studentService.getAllStudents().forEach(s ->
-                        System.out.println(s.getStudentId() + " - " + s.getName()));
+                if (parts.length == 2) {
+                    String courseId = parts[1];
+                    Course course = courseService.findCourseById(courseId);
+                    System.out.println("Students in course " + course.getName() + ":");
+                    for (Student s : course.getStudents()) {
+                        System.out.println(s.getStudentId() + " - " + s.getName());
+                    }
+                } else {
+                    studentService.getAllStudents().forEach(s ->
+                            System.out.println(s.getStudentId() + " - " + s.getName()));
+                }
                 break;
+
             case "TEACHERS":
                 teacherService.getAllTeachers().forEach(t ->
                         System.out.println(t.getTeacherId() + " - " + t.getName()));
                 break;
+
             case "PROFIT":
-                double profit = courseService.getTotalEarned() -
-                        teacherService.getAllTeachers().stream().mapToDouble(Teacher::getSalary).sum();
-                System.out.println("Total profit: $" + profit);
+                double totalEarned = courseService.getTotalEarned();
+                double totalSpent = 0;
+                for (Teacher t : teacherService.getAllTeachers()) totalSpent += t.getSalary();
+                System.out.println("Total profit: $" + (totalEarned - totalSpent));
                 break;
+
+            case "MONEY":
+                if (parts.length < 2) {
+                    System.out.println("Usage: SHOW MONEY [EARNED/SPENT]");
+                    break;
+                }
+                String moneyType = parts[1].toUpperCase();
+                switch (moneyType) {
+                    case "EARNED":
+                        for (Course c : courseService.getAllCourses()) {
+                            System.out.println(c.getName() + " earned: $" + c.getMoneyEarned());
+                        }
+                        break;
+                    case "SPENT":
+                        for (Teacher t : teacherService.getAllTeachers()) {
+                            System.out.println(t.getName() + " salary: $" + t.getSalary());
+                        }
+                        break;
+                    default:
+                        System.out.println("Unknown MONEY command: " + moneyType);
+                }
+                break;
+
             default:
                 throw new InvalidCommandException("SHOW command not recognized");
         }
@@ -167,16 +205,12 @@ public class ConsoleMenu implements CommandLineRunner {
                     System.out.print("Enter teacher's name: ");
                     String name = scanner.nextLine();
                     System.out.print("Enter teacher's salary: ");
-                    double teacherSalary = scanner.nextDouble();
-                    scanner.nextLine();
+                    double salary = readDouble();
 
-                     teacher = new Teacher(teacherName, teacherSalary);
-                    if (teacher.getSalary() < 300.00) {
-                        throw new InvalidInputException("Teacher's salary can not be less than $300 because of laws about minimal salary!");
-                    }
-                    if (teacher.getName().length() <= 3) {
-                        throw new InvalidInputException("Teacher's name can not be less 3 letters.");
-                    }
+                    if (name.length() <= 3) throw new InvalidInputException("Teacher's name must be >3 letters");
+                    if (salary < 300) throw new InvalidInputException("Teacher's salary must be at least $300");
+
+                    Teacher teacher = new Teacher(name, salary);
                     teacherService.addTeacher(teacher);
                     System.out.println("Teacher created: " + teacher.getTeacherId() + " - " + teacher.getName());
                     break;
@@ -196,16 +230,12 @@ public class ConsoleMenu implements CommandLineRunner {
                     System.out.print("Enter course's name: ");
                     String name = scanner.nextLine();
                     System.out.print("Enter course's price: ");
-                    double coursePrice = scanner.nextDouble();
-                    scanner.nextLine();
+                    double price = readDouble();
 
-                    course = new Course(courseName, coursePrice);
-                    if (course.getName().length() <= 3) {
-                        throw new InvalidInputException("Course's name can not be less 3 letters.");
-                    }
-                    if (course.getPrice() < 0.00) {
-                        throw new InvalidInputException("Course's price can not be negative.");
-                    }
+                    if (name.length() <= 3) throw new InvalidInputException("Course name must be >3 letters");
+                    if (price < 0) throw new InvalidInputException("Course price cannot be negative");
+
+                    Course course = new Course(name, price);
                     courseService.addCourse(course);
                     System.out.println("Course created: " + course.getCourseId() + " - " + course.getName());
                     break;
@@ -227,18 +257,13 @@ public class ConsoleMenu implements CommandLineRunner {
                     System.out.print("Enter student's address: ");
                     String address = scanner.nextLine();
                     System.out.print("Enter student's email: ");
-                    String studentEmail = scanner.nextLine();
+                    String email = scanner.nextLine();
 
-                    student = new Student(studentName, studentAddress, studentEmail);
-                    if (student.getName().length() <= 3) {
-                        throw new InvalidInputException("Student's name can not be less 3 letters.");
-                    }
-                    if (student.getAddress().length() <= 3) {
-                        throw new InvalidInputException("Student's name can not be less 3 letters.");
-                    }
-                    if (!student.getEmail().contains("@")) {
-                        throw new InvalidInputException("Student's email is probably invalid.");
-                    }
+                    if (name.length() <= 3) throw new InvalidInputException("Student name must be >3 letters");
+                    if (address.length() <= 3) throw new InvalidInputException("Student address must be >3 letters");
+                    if (!email.contains("@")) throw new InvalidInputException("Invalid email");
+
+                    Student student = new Student(name, address, email);
                     studentService.addStudent(student);
                     System.out.println("Student created: " + student.getStudentId() + " - " + student.getName());
                     break;
@@ -247,104 +272,16 @@ public class ConsoleMenu implements CommandLineRunner {
                 }
             }
         }
-        System.out.println("Setup is done! Open the console!");
-//=======================  Main Console ==========================
-        while (isRunning) {
-            System.out.print("Console: ");
-            String command = scanner.nextLine().trim();
-            System.out.println();
-            if (command.isEmpty()) continue;
-            String[] partsOfCommand = command.split(" ");
-            String mainCommand = partsOfCommand[0].toUpperCase();
+    }
+
+    private int readInt() {
+        while (true) {
             try {
-                switch (mainCommand) {
-                    case "ENROLL":
-                        if (partsOfCommand.length != 3) {
-                            throw new InvalidCommandException("Usage: ENROLL [STUDENT_ID] [COURSE_ID]");
-                        }
-                        if (!students.containsKey(partsOfCommand[1])) {
-                            throw new InvalidCommandException("Student with ID " + partsOfCommand[1] + " does not exist.");
-                        }
-                        if (!courses.containsKey(partsOfCommand[2])) {
-                            throw new InvalidCommandException("Course with ID " + partsOfCommand[2] + " does not exist.");
-                        }
-                        studentService.enrollStudentToCourse(partsOfCommand[1], partsOfCommand[2]);
-                        break;
-                    case "ASSIGN":
-                        if (partsOfCommand.length != 3) {
-                            throw new InvalidCommandException("Usage: ASSIGN [TEACHER_ID] [COURSE_ID]");
-                        }
-                        if (!teachers.containsKey(partsOfCommand[1])) {
-                            throw new InvalidCommandException("Teacher with ID " + partsOfCommand[1] + " does not exist.");
-                        }
-                        if (!courses.containsKey(partsOfCommand[2])) {
-                            throw new InvalidCommandException("Course with ID " + partsOfCommand[2] + " does not exist.");
-                        }
-                        courseService.assignTeacher(partsOfCommand[1], partsOfCommand[2]);
-                        break;
-                    case "SHOW":
-                        if (partsOfCommand.length != 2) {
-                            throw new InvalidCommandException("Usage: SHOW [COURSES|STUDENTS|TEACHERS|PROFIT]");
-                        }
-
-                        String whatToShow = partsOfCommand[1];
-
-                        switch (whatToShow) {
-                            case "COURSES":
-                                courseService.showCourses();
-                                break;
-
-                            case "STUDENTS":
-                                studentService.showStudents();
-                                break;
-
-                            case "TEACHERS":
-                                teacherService.showTeachers();
-                                break;
-
-                            case "PROFIT":
-                                double total = courseService.getTotalEarned();
-                                System.out.println("Total profit: " + total);
-                                break;
-
-                            default:
-                                throw new InvalidCommandException("Usage: SHOW [COURSES|STUDENTS|TEACHERS|PROFIT]");
-                        }
-                        break;
-                    case "LOOKUP":
-
-                        if (partsOfCommand.length != 3) {
-                            throw new InvalidCommandException("Usage: LOOKUP [COURSE|STUDENT|TEACHER] [ID]");
-                        }
-
-                        String type = partsOfCommand[1];
-                        String id = partsOfCommand[2];
-
-                        switch (type) {
-                            case "COURSE":
-                                courseService.lookupCourse(id);
-                                break;
-
-                            case "STUDENT":
-                                studentService.lookupStudent(id);
-                                break;
-
-                            case "TEACHER":
-                                teacherService.lookupTeacher(id);
-                                break;
-
-                            default:
-                                throw new InvalidCommandException("Unknown LOOKUP command");
-                        }
-
-                        break;
-                    case "EXIT":
-                        isRunning = false;
-                        System.out.println("Closing console...");
-                        break;
-                    default:
-                        System.out.println("Invalid command!");
-                }
+                int value = Integer.parseInt(scanner.nextLine());
+                if (value < 0) throw new InvalidInputException("Value cannot be negative");
+                return value;
+            } catch (NumberFormatException | InvalidInputException e) {
+                System.out.println("Please enter a valid integer.");
             }
         }
     }

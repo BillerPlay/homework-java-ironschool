@@ -42,6 +42,7 @@ public class CourseService {
     public void enrollStudent(String courseId, String studentId) {
         Student student = studentService.findStudentById(studentId);
         Course course = findCourseById(courseId);
+        course.getStudents().add(student);
         addMoney(course.getCourseId());
     }
 

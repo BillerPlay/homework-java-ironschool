@@ -1,5 +1,7 @@
 package com.ironhack.ironschool.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Course {
@@ -8,14 +10,16 @@ public class Course {
     private double price;
     private double moneyEarned;
     private Teacher teacher;
-
+    private List<Student> students = new ArrayList<>();
     public Course(String name, double price) {
         this.courseId = generateCourseId();
         this.name = name;
         this.price = price;
         this.moneyEarned = 0;
     }
-
+    public List<Student> getStudents() {
+        return students;
+    }
     public String getCourseId() {
         return courseId;
     }

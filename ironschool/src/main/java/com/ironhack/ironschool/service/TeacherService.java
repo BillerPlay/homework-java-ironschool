@@ -13,6 +13,7 @@ public class TeacherService {
     private Map<String, Teacher> teachers = new HashMap<>();
     public Teacher addTeacher(Teacher teacher) {
         teachers.put(teacher.getTeacherId(), teacher);
+        return teachers.get(teacher.getTeacherId());
     }
 
     public Teacher findTeacherById(String teacherId) {

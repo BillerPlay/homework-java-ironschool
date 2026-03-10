@@ -74,9 +74,10 @@ public class ConsoleMenu implements CommandLineRunner {
                         break;
 
                     case "SHOW":
-                        if (parts.length != 2)
-                            throw new InvalidCommandException("Usage: SHOW [COURSES/STUDENTS/TEACHERS/PROFIT]");
-                        showCommand(parts[1].toUpperCase());
+                        if (parts.length < 2) throw new InvalidCommandException("Usage: SHOW [type]");
+                        String[] showParts = new String[parts.length - 1];
+                        System.arraycopy(parts, 1, showParts, 0, showParts.length);
+                        showCommand(showParts);
                         break;
 
                     case "LOOKUP":
@@ -115,25 +116,62 @@ public class ConsoleMenu implements CommandLineRunner {
         System.out.println("Teacher " + teacher.getName() + " assigned to course " + course.getName());
     }
 
-    private void showCommand(String type) {
+    private void showCommand(String[] parts) {
+        String type = parts[0];
         switch (type) {
             case "COURSES":
                 courseService.getAllCourses().forEach(c ->
                         System.out.println(c.getCourseId() + " - " + c.getName() + " - $" + c.getPrice()));
                 break;
+
             case "STUDENTS":
-                studentService.getAllStudents().forEach(s ->
-                        System.out.println(s.getStudentId() + " - " + s.getName()));
+                if (parts.length == 2) {
+                    String courseId = parts[1];
+                    Course course = courseService.findCourseById(courseId);
+                    System.out.println("Students in course " + course.getName() + ":");
+                    for (Student s : course.getStudents()) {
+                        System.out.println(s.getStudentId() + " - " + s.getName());
+                    }
+                } else {
+                    studentService.getAllStudents().forEach(s ->
+                            System.out.println(s.getStudentId() + " - " + s.getName()));
+                }
                 break;
+
             case "TEACHERS":
                 teacherService.getAllTeachers().forEach(t ->
                         System.out.println(t.getTeacherId() + " - " + t.getName()));
                 break;
+
             case "PROFIT":
-                double profit = courseService.getTotalEarned() -
-                        teacherService.getAllTeachers().stream().mapToDouble(Teacher::getSalary).sum();
-                System.out.println("Total profit: $" + profit);
+                double totalEarned = courseService.getTotalEarned();
+                double totalSpent = 0;
+                for (Teacher t : teacherService.getAllTeachers()) totalSpent += t.getSalary();
+                System.out.println("Total profit: $" + (totalEarned - totalSpent));
                 break;
+
+            case "MONEY":
+                if (parts.length < 2) {
+                    System.out.println("Usage: SHOW MONEY [EARNED/SPENT]");
+                    break;
+                }
+                String moneyType = parts[1].toUpperCase();
+                switch (moneyType) {
+                    case "EARNED":
+                        for (Course c : courseService.getAllCourses()) {
+                            System.out.println(c.getName() + " earned: $" + c.getMoneyEarned());
+                        }
+                        break;
+                    case "SPENT":
+                        for (Teacher t : teacherService.getAllTeachers()) {
+                            System.out.println(t.getName() + " salary: $" + t.getSalary());
+                        }
+                        break;
+                    default:
+                        System.out.println("Unknown MONEY command: " + moneyType);
+                }
+                break;
+
             default:
                 throw new InvalidCommandException("SHOW command not recognized");
         }

@@ -11,7 +11,7 @@ import java.util.*;
 public class TeacherService {
 
     private Map<String, Teacher> teachers = new HashMap<>();
-    public void addTeacher(Teacher teacher) {
+    public Teacher addTeacher(Teacher teacher) {
         teachers.put(teacher.getTeacherId(), teacher);
     }
 
@@ -33,18 +33,10 @@ public class TeacherService {
             System.out.println(t);
         }
     }
-
-    public void lookupTeacher(String teacherId){
-
-        Teacher teacher = teachers.get(teacherId);
-
-        if(teacher == null){
-            System.out.println("Teacher not found");
-            return;
-        }
-
+    public void lookupTeacher(String teacherId) {
+        Teacher teacher = findTeacherById(teacherId);
         System.out.println("Teacher ID: " + teacher.getTeacherId());
         System.out.println("Name: " + teacher.getName());
-        System.out.println("Salary: " + teacher.getSalary());
+        System.out.println("Salary: $" + teacher.getSalary());
     }
 }

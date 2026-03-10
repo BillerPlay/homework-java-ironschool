@@ -14,9 +14,9 @@ public class StudentService {
         this.courseService = courseService;
     }
     private Map<String, Student> students = new HashMap<>();
-
-    public void addStudent(Student student) {
+    public Student addStudent(Student student) {
         students.put(student.getStudentId(), student);
+        return students.get(student.getStudentId());
     }
 
     public Student findStudentById(String studentId) {
@@ -36,31 +36,11 @@ public class StudentService {
             System.out.println(s);
         }
     }
-
-    public void enrollStudentToCourse(String studentId, String courseId){
-        Student student = students.get(studentId);
-        student.setCourse(courseService.getCourse(courseId));
-
-        courseService.addMoney(courseId);
-    }
-
-    public void lookupStudent(String studentId){
-
-        Student student = students.get(studentId);
-
-        if(student == null){
-            System.out.println("Student not found");
-            return;
-        }
-
+    public void lookupStudent(String studentId) {
+        Student student = findStudentById(studentId);
         System.out.println("Student ID: " + student.getStudentId());
         System.out.println("Name: " + student.getName());
         System.out.println("Address: " + student.getAddress());
         System.out.println("Email: " + student.getEmail());
-        if(student.getCourse() != null){
-            System.out.println("Course: " + student.getCourse().getName());
-        } else {
-            System.out.println("Course: None");
-        }
     }
 }

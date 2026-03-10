@@ -1,6 +1,5 @@
 package com.ironhack.ironschool.model;
 
-import jakarta.validation.constraints.Email;
 
 import java.util.Random;
 
@@ -8,7 +7,6 @@ public class Student {
     private String studentId;
     private String name;
     private String address;
-    @Email
     private String email;
     private Course course;
 

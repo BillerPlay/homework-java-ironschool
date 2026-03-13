@@ -1,25 +1,42 @@
 package com.ironhack.ironschool.model;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class Course {
+
     private String courseId;
+
+    @NotBlank(message = "Course name cannot be blank")
     private String name;
+
+    @Min(value = 0, message = "Price cannot be negative")
     private double price;
+
+    @Min(value = 0, message = "Money earned cannot be negative")
     private double moneyEarned;
+
+    @NotNull(message = "Teacher cannot be null")
     private Teacher teacher;
+
     private List<Student> students = new ArrayList<>();
+
     public Course(String name, double price) {
         this.courseId = generateCourseId();
         this.name = name;
         this.price = price;
         this.moneyEarned = 0;
     }
+
     public List<Student> getStudents() {
         return students;
     }
+
     public String getCourseId() {
         return courseId;
     }
@@ -66,6 +83,4 @@ public class Course {
         int number = 1000 + random.nextInt(9000);
         return coursePrefix + "-" + number;
     }
-
-
 }

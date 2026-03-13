@@ -9,10 +9,6 @@ import java.util.*;
 
 @Service
 public class StudentService {
-    public final CourseService courseService;
-    public StudentService(CourseService courseService){
-        this.courseService = courseService;
-    }
     private Map<String, Student> students = new HashMap<>();
     public Student addStudent(Student student) {
         students.put(student.getStudentId(), student);

@@ -1,17 +1,23 @@
 package com.ironhack.ironschool.model;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Random;
-import java.util.UUID;
 
 public class Teacher {
 
     private String teacherId;
+
+    @NotBlank(message = "Teacher name cannot be blank")
     private String name;
+
+    @Min(value = 0, message = "Salary cannot be negative")
     private double salary;
 
     public Teacher(String name, double salary) {
-        teacherId=generateTeacherId();
+        this.teacherId = generateTeacherId();
         this.name = name;
-        setSalary(salary);
+        this.salary = salary;
     }
 
     public String getTeacherId() {
@@ -42,10 +48,11 @@ public class Teacher {
                 ", salary=" + salary +
                 '}';
     }
+
     public String generateTeacherId() {
         Random random = new Random();
-        String coursePrefix = "TEA";
+        String teacherPrefix = "TEA";
         int number = 1000 + random.nextInt(9000);
-        return coursePrefix + "-" + number;
+        return teacherPrefix + "-" + number;
     }
 }

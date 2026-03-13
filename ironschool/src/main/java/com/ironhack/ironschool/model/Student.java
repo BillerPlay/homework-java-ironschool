@@ -3,15 +3,31 @@ package com.ironhack.ironschool.model;
 
 import java.util.Random;
 
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+
 public class Student {
+
     private String studentId;
+
+    @NotBlank(message = "Name cannot be blank")
+    @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
+
+    @NotBlank(message = "Address cannot be blank")
     private String address;
+
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be valid")
     private String email;
+
     private Course course;
 
     public Student(String name, String address, String email) {
-        studentId=generateStudentId();
+        this.studentId = generateStudentId();
         this.name = name;
         this.address = address;
         this.email = email;
@@ -63,10 +79,12 @@ public class Student {
                 ", course=" + (course != null ? course.getName() : "None") +
                 '}';
     }
+
     public String generateStudentId() {
         Random random = new Random();
         String coursePrefix = "STU";
         int number = 1000 + random.nextInt(9000);
         return coursePrefix + "-" + number;
     }
+
 }
